@@ -1,0 +1,88 @@
+1/ GamePanel: tạo 1 panel ( đc dùng để làm màn hình game)
+-Lớp này vừa implements Runnable để tạo ra thread cho việc
+render và update frame ( với FPS=80)
+-Ngoài ra còn implements KeyListener để có thể bắt sự kiện
+khi nhấn phím ( cũng có thể tạo 1 class riêng cũng được )
+rồi addListener vào jframe để bắt sự kiện
+2/ InputManager: nhận cái keyCode có được từ việc thao
+tác bàn phím để đi xử lí cho hành động nhân vật
+
+3/Các cách để lấy ra 1 tấm hình:
+C1: Cho tấm hình đó vào 1 thư mục rồi đọc file đó lên
+BufferedImage image=ImageIO.read(new File("data/megasprite.png"));
+g.drawImage(image, x, y, this);
+rồi vẽ lên panel
+C2: Dùng cách giống setIcon
+Image img=new ImageIcon(this.getClass().getResource("/megasprite.png")).getImage();
+g.drawImage(img, x, y, this); : là phương thức để đối tượng lớp graphic vẽ Image
+đều được
+
+4/Phươg thức subImage để lấy ra 1 hình con từ hình có sẵn
+subImage=image.getSubimage(x, y, WIDTH, HEIGHT);
+Dựa vào tham số có thể thay nó lấy 1 HCN bắt đầu từ (x,y) và hcn đó có chiều rộng 
+và chiều cao như tham số
+
+5/Chú ý:
+	Xây dựng copy constructor
+	public FrameImage(FrameImage frameImage) {
+		// Tránh việc rắc rối khi image của frameImage thay đổi thì
+		// this.image cũng thay đổi theo => Ta cần new Image mới
+		this.image = new BufferedImage(frameImage.getImageWidth(), frameImage.getImageHeight(),
+				frameImage.getImage().getType());
+
+		// Lúc này image mới chỉ có kích thước là chiều rộng,chiều cao và loại ảnh
+		// như bức ảnh của tham số frameImage chứ chưa có hình ảnh nào cả
+
+		// Bây giờ cần vẽ ảnh lên cái image đó
+		// Lấy ra Graphics của image thì g là "cây cọ" của chính image
+		// nên khi g.drawImage thì sẽ vẽ lên đối tượng image
+		Graphics g = image.getGraphics();
+		g.drawImage(frameImage.getImage(), 0, 0, null);
+	}
+
+6/Next step: Xây dựng class Animation
+Lật ngược ảnh sang trái
+			BufferedImage img = this.frameImages.get(i).getImage();
+			// Lật ngược ảnh sang trái
+			AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
+			tx.translate(-img.getWidth(), 0);
+
+			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+			img = op.filter(img, null);
+			
+7/ Mỗi FrameImage sẽ chứa một subImage.Thêm nhiều FrameImage vào Animation rồi vẽ sẽ tạo ra chuyển động
+8/
+*Đối với frame.txt 
+Dòng đầu chứa tổng số frame
+Chứa thông tin các frame gồm:
+-Tên subImage
+-Đường dẫn tấm hình lớn để getSubImage
+-x
+-y
+-w
+-h
+
+*Đối với animation.txt
+Dòng đầu chứa tổng số animation
+-Với mỗi animation sẽ có:
++Tên aniamtion
++Dòng tiếp theo chứa các frame trong animation đó
+(gồm tên frame và delayTime)
+
+9/Next steep: xây dựng class CacheDataLoader để đọc dữ liệu từ file frame.txt và animation.txt
+Ôn tập đọc file
+FileReader fr = new FileReader(frameFile);
+BufferedReader br = new BufferedReader(fr);
+
+10/ next steep: kĩ thuật vẽ hình đệm tại gamepanel
+-Việc mỗi lần update hay render phải vẽ lại panel 
+(vẽ lại các hình) 
+=> Làm việc này sẽ khiến chương trình có 1 khoảng delay, giật lag
+-Nếu vẽ từng hình ảnh một cách TUẦN TỰ sẽ khiến việc hiển thị
+hình ảnh không đồng đều
+=>Do đó thay vì vẽ các đối tượng image lên 1 panel thì vẽ các 
+đối tượng đó lên cái Image khác rồi vẽ image đó lên panel
+
+11/Tạo package gameObject
+-Xây dựng class megaMan
+-Tạo phương thức updateGame
