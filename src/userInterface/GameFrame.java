@@ -26,11 +26,11 @@ public class GameFrame extends JFrame {
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLayout(new BorderLayout());
-
 		// LoadData tại đây để vì tại và trước dòng newGamePanel() vì trong constructor
 		// GamePanel có sử dụng việc getAnimation/getFrameImage từ Hashtable nên bắt
 		// buộc Hashtable phải có dữ liệu trước đó rồi
 		try {
+			//Gọi LoadData để load hết các file lên để có dữ liệu cho GamePanel xử lí
 			CacheDataLoader.getInstance().LoadData();
 		} catch (IOException e) {
 			e.printStackTrace();

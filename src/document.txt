@@ -86,3 +86,45 @@ hình ảnh không đồng đều
 11/Tạo package gameObject
 -Xây dựng class megaMan
 -Tạo phương thức updateGame
+-Tạo chuyển động qua trái,phải,mũi tên lên,space (để nhảy) cho megaMan trong
+class inputManager
+
+12/Làm map cho nhân vật di chuyển trên
+-Xây dựng physical map: 
++Dùng hcn để cấu tạo nên cái map
++Dùng ma trận để thể hiện: 
+0 => Ko có hcn, 1 có hcn
++Xây dựng hàm load dữ liệu từ phys_map.txt trong
+class cacheDataLoader để lưu vào mảng 2 chiều phys_map
+
+13/Xây dựng class PhysicalMap
+- titleSize: độ dài cạnh hình vuông
+hình vuông có giá trị bằng 1 là vật cản, 0 là không có gì 
+
+Chú ý: 
+Graphics giống như một cây cọ, các container như JFrame,JPanel,Image
+đều có cây cọ này. Nếu ta getGraphics từ JFrame rồi lấy cây cọ đó vẽ
+thì sẽ vẽ lên JFrame, cọ của container nào thì vẽ lên container đó
+
+14/ Xây dựng lớp GameWorld
+-Đặt physical và megaMan vào class này để dễ dàng cập nhật
+Tại đây sẽ thực hiện khởi tạo megaMan, physicalMap đồng thời render
+và update chúng, chứ không update, render tại GamePanel nữa.
+
+-Bổ sung tại lớp MegaMan phướng thức getBoundForCollisionWithMap
+15/ Xây dựng lớp abstract GameObject 
+(lớp cơ sở nhất của tất cả đối tượng trong game)
+- Do có một số đối tượng game có một số điểm chung nên cần tạo ra lớp cơ sở
+( chẳng hạn như posX,posY)
+Lớp này sẽ có phương thức ảo là Update() vì các nhân vật game 
+đều cần phương thức update để cập nhật posX,posY
+- Trong game có 2 loại đối tượng: 1 cái liên quan đến đối tượng to lớn như map
+(physicalMap và backgroundMap). Còn loại kia liên quan đến các đối tượng
+cụ thể (nhân vật)
+
+16/ Xây dựng lớp ParticularObject
+- Ta không để thuộc tính weight,height,mass,speedX,speedY,blood 
+vào GameObject vì điều này không đúng vì map thì làm gì có các 
+thuộc tính trên.
+=> Do đó ta sẽ thêm các thuộc tính chỉ vào các class nhân vật thôi
+cụ thể là lớp cơ sở ParticularObject kế thừa từ lớp GameObject

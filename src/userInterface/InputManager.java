@@ -2,33 +2,46 @@ package userInterface;
 
 import java.awt.event.KeyEvent;
 
+import gameobjects.GameWorld;
+import gameobjects.PhysicalMap;
+import gameobjects.megaMan;
+
 //Lớp này nhận 
 public class InputManager {
-	private GamePanel gamePanel;
+	private GameWorld gameWorld;
 
-	public InputManager(GamePanel gamePanel) {
-		this.gamePanel = gamePanel;
+	public InputManager(GameWorld gameWorld) {
+		this.gameWorld = gameWorld;
 	}
 
 	// Nhận keyCode lấy từ bàn phím để xử lí
 	public void processKeyPressed(int keyCode) {
 		switch (keyCode) {
 		case KeyEvent.VK_UP:
-			System.out.println("You pressed up");
+			this.gameWorld.getMegaman().setSpeedY(-5);
+			this.gameWorld.getPhysMap().updatePosY(5);
 			break;
 		case KeyEvent.VK_DOWN:
-			System.out.println("You pressed down");
+			this.gameWorld.getPhysMap().updatePosY(-5);
 			break;
 		case KeyEvent.VK_LEFT:
-			//Khi bấm qua trái thì cho nhân vật đi qua 5 px
-			gamePanel.getMegaMan().setSpeedX(-5);
+			// Khi bấm qua trái thì cho nhân vật đi qua trái 3 px
+			this.gameWorld.getMegaman().setDirection(megaMan.DIR_LEFT);
+			this.gameWorld.getMegaman().setSpeedX(-3);
+			this.gameWorld.getPhysMap().updatePosX(5);
 			break;
 		case KeyEvent.VK_RIGHT:
-			gamePanel.getMegaMan().setSpeedX(5);
+			this.gameWorld.getMegaman().setDirection(megaMan.DIR_RIGHT);
+			this.gameWorld.getMegaman().setSpeedX(3);
+			this.gameWorld.getPhysMap().updatePosX(-5);
 			break;
 		case KeyEvent.VK_ENTER:
 			break;
 		case KeyEvent.VK_SPACE:
+//			 Khi bấm space thì nhảy lên.Vì chiều dương của trục y hướng xuống nên ta phải setSpeedY
+//			 là âm để cho megaMan được vẽ hướng lên
+			this.gameWorld.getMegaman().setSpeedY(-5);
+			this.gameWorld.getPhysMap().updatePosY(5);
 			break;
 		case KeyEvent.VK_A:
 			// A: để cho nhân vật bắn
@@ -39,20 +52,21 @@ public class InputManager {
 	public void processKeyReleased(int keyCode) {
 		switch (keyCode) {
 		case KeyEvent.VK_UP:
-			System.out.println("You released up");
 			break;
 		case KeyEvent.VK_DOWN:
-			System.out.println("You released down");
 			break;
 		case KeyEvent.VK_LEFT:
-			System.out.println("You released left");
+			this.gameWorld.getMegaman().setSpeedX(0);
+			this.gameWorld.getMegaman().setDirection(megaMan.DIR_LEFT);
 			break;
 		case KeyEvent.VK_RIGHT:
-			System.out.println("You released right");
+			this.gameWorld.getMegaman().setSpeedX(0);
+			this.gameWorld.getMegaman().setDirection(megaMan.DIR_RIGHT);
 			break;
 		case KeyEvent.VK_ENTER:
 			break;
 		case KeyEvent.VK_SPACE:
+
 			break;
 		case KeyEvent.VK_A:
 			// A: để cho nhân vật bắn

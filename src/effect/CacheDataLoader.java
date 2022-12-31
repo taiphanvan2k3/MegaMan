@@ -3,9 +3,11 @@ package effect;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
@@ -23,6 +25,10 @@ public class CacheDataLoader {
 
 	private String frameFile = "data/frame.txt";
 	private String animationFile = "data/animation.txt";
+	private String physMapFile = "data/phys_map.txt";
+
+	// Mảng 2 chiều để chứa 0,1 thể hiện việc có in ra map hay không.
+	int phys_map[][];
 
 	// Dùng design pattern này thì không cho tạo constructor
 	// mà lấy constructor thông qua biến static
@@ -42,6 +48,11 @@ public class CacheDataLoader {
 		// FrameImage
 		this.LoadFrame();
 		this.LoadAnimation();
+		this.LoadPhysMap();
+	}
+
+	public int[][] getPhysicalMap() {
+		return this.phys_map;
 	}
 
 	private void LoadFrame() throws IOException {
@@ -139,6 +150,7 @@ public class CacheDataLoader {
 		// Chú ý null khác với rỗng ""
 		if (br.readLine() == null) {
 			System.out.println("No data");
+			br.close();
 			return;
 		}
 
@@ -164,5 +176,33 @@ public class CacheDataLoader {
 			this.animations.put(animation.getName(), animation);
 		}
 
+		br.close();
+		fr.close();
+	}
+
+	public void LoadPhysMap() {
+		File f = new File(physMapFile);
+		try (FileInputStream fis = new FileInputStream(f);
+				InputStreamReader isr = new InputStreamReader(fis);
+				BufferedReader br = new BufferedReader(isr);) {
+			/*
+			 * Hoặc chỉ đơn giản: FileReader fr=new FileReader(f); BufferedReader br=new
+			 * BufferedReader(fr);
+			 */
+			String line = br.readLine();
+			int rows = Integer.valueOf(line);
+			line = br.readLine();
+			int columns = Integer.valueOf(line);
+
+			phys_map = new int[rows][columns];
+			for (int i = 0; i < rows; i++) {
+				line = br.readLine();
+				String ds[] = line.split(" ");
+				for (int j = 0; j < columns; j++)
+					phys_map[i][j] = Integer.valueOf(ds[j]);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

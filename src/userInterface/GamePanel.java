@@ -3,62 +3,49 @@ package userInterface;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import effect.Animation;
-import effect.CacheDataLoader;
-import effect.FrameImage;
-import gameobjects.megaMan;
+import gameobjects.GameWorld;
 
 public class GamePanel extends JPanel implements Runnable, KeyListener {
 	private Thread thread;
 	private InputManager inputManager;
 	private BufferedImage bufferedImage;
 	private Graphics2D bufGraphic2D;
-
-	private megaMan megaman;
+	private GameWorld gameWorld;
 
 	public GamePanel() {
-		inputManager = new InputManager(this);
+		gameWorld = new GameWorld();
+		inputManager = new InputManager(gameWorld);
 		bufferedImage = new BufferedImage(GameFrame.screen_width, GameFrame.screen_height, BufferedImage.TYPE_INT_ARGB);
-		megaman = new megaMan(300, 300, 100, 100, 0.1f);
 	}
 
 	@Override
-	// paint là phương thức tự động gọi khi add Panel này vào
+//	 paint là phương thức tự động gọi khi add Panel này vào
 	public void paint(Graphics g) {
-		// Ko cần super.draw(g) nữa vì bufferedImage có kích thước to bằng
-		// panel nên ko sợ vẫn còn các hình ảnh lúc trước chưa đựo xoá
+//		 Ko cần super.draw(g) nữa vì bufferedImage có kích thước to bằng
+//		 panel nên ko sợ vẫn còn các hình ảnh lúc trước chưa được xoá
 		g.drawImage(bufferedImage, 0, 0, this);
 	}
 
 	public void updateGame() {
-		// update lại vị trí x,y của nhân vật megaMan
-		megaman.update();
+		gameWorld.Update();
 	}
 
 	public void renderGame() {
-		if (bufferedImage == null) {
-			bufferedImage = new BufferedImage(GameFrame.screen_width, GameFrame.screen_height,
-					BufferedImage.TYPE_INT_ARGB);
-		}
-
+		// Lấy graphics từ container ImageIO nên ở dưới ta dùng
+		// để vẽ megaman bằng cây cọ đó thì sẽ vẽ megaman lên bức ảnh này
 		if (bufGraphic2D == null)
 			bufGraphic2D = (Graphics2D) bufferedImage.getGraphics();
 		bufGraphic2D.setColor(Color.white);
 		bufGraphic2D.fillRect(0, 0, this.getWidth(), this.getHeight());
 
-		// draw object games here
-		megaman.draw(bufGraphic2D);
+		// Dùng cây cọ bufGraphics2D của Image để
+		gameWorld.Render(bufGraphic2D);
 	}
 
 	public void startGame() {
@@ -110,7 +97,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 		inputManager.processKeyReleased(e.getKeyCode());
 	}
 
-	public megaMan getMegaMan() {
-		return megaman;
+	public GameWorld getGameWorld() {
+		return this.gameWorld;
 	}
 }
