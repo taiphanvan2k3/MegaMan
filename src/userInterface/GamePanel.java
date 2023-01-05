@@ -1,6 +1,5 @@
 package userInterface;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -14,38 +13,21 @@ import gameobjects.GameWorld;
 public class GamePanel extends JPanel implements Runnable, KeyListener {
 	private Thread thread;
 	private InputManager inputManager;
-	private BufferedImage bufferedImage;
-	private Graphics2D bufGraphic2D;
 	private GameWorld gameWorld;
 
 	public GamePanel() {
 		gameWorld = new GameWorld();
 		inputManager = new InputManager(gameWorld);
-		bufferedImage = new BufferedImage(GameFrame.screen_width, GameFrame.screen_height, BufferedImage.TYPE_INT_ARGB);
 	}
 
 	@Override
 //	 paint là phương thức tự động gọi khi add Panel này vào
 	public void paint(Graphics g) {
-//		 Ko cần super.draw(g) nữa vì bufferedImage có kích thước to bằng
-//		 panel nên ko sợ vẫn còn các hình ảnh lúc trước chưa được xoá
-		g.drawImage(bufferedImage, 0, 0, this);
-	}
-
-	public void updateGame() {
-		gameWorld.Update();
-	}
-
-	public void renderGame() {
-		// Lấy graphics từ container ImageIO nên ở dưới ta dùng
-		// để vẽ megaman bằng cây cọ đó thì sẽ vẽ megaman lên bức ảnh này
-		if (bufGraphic2D == null)
-			bufGraphic2D = (Graphics2D) bufferedImage.getGraphics();
-		bufGraphic2D.setColor(Color.white);
-		bufGraphic2D.fillRect(0, 0, this.getWidth(), this.getHeight());
-
-		// Dùng cây cọ bufGraphics2D của Image để
-		gameWorld.Render(bufGraphic2D);
+		/*
+		 * Ko cần super.draw(g) nữa vì bufferedImage có kích thước to bằng panel nên ko
+		 * sợ vẫn còn các hình ảnh lúc trước chưa được xoá
+		 */
+		g.drawImage(gameWorld.getBufferedImage(), 0, 0, this);
 	}
 
 	public void startGame() {
@@ -64,8 +46,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 		 */
 		long beginTime = System.nanoTime();
 		while (true) {
-			updateGame();
-			renderGame();
+			gameWorld.Update();
+			gameWorld.Render();
 			repaint();
 
 			long deltaTime = System.nanoTime() - beginTime;

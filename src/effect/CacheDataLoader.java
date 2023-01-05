@@ -1,5 +1,7 @@
 package effect;
 
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,33 +10,44 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 
 //Lớp này dùng để load dữ liệu từ file lên
 public class CacheDataLoader {
-	// Dùng design pattern singleton tạo ra instance để tránh việc
-	// tạo ra nhiều đối tượng
+	/*
+	 * Dùng design pattern singleton tạo ra instance để tránh việc tạo ra nhiều đối
+	 * tượng
+	 */
 	private static CacheDataLoader instance = null;
 
-	// Dùng hashtable để truy xuất nhanh theo key là tên của
-	// frameImage hay animation
+	/*
+	 * Dùng hashtable để truy xuất nhanh theo key là tên của frameImage hay
+	 * animation
+	 */
 	private Hashtable<String, FrameImage> frameImages;
 	private Hashtable<String, Animation> animations;
-
+	private Hashtable<String, AudioClip> sounds;
 	private String frameFile = "data/frame.txt";
 	private String animationFile = "data/animation.txt";
 	private String physMapFile = "data/phys_map.txt";
-
+	private String backGroundMap = "data/background_map.txt";
+	private String soundPath = "data/sounds.txt";
 	// Mảng 2 chiều để chứa 0,1 thể hiện việc có in ra map hay không.
 	int phys_map[][];
+	int back_ground[][];
 
-	// Dùng design pattern này thì không cho tạo constructor
-	// mà lấy constructor thông qua biến static
+	/*
+	 * Dùng design pattern này thì không cho tạo constructor mà lấy constructor
+	 * thông qua biến static
+	 */
 	private CacheDataLoader() {
 		this.frameImages = new Hashtable<String, FrameImage>();
 		this.animations = new Hashtable<String, Animation>();
+		this.sounds = new Hashtable<String, AudioClip>();
 	}
 
 	public static CacheDataLoader getInstance() {
@@ -49,6 +62,8 @@ public class CacheDataLoader {
 		this.LoadFrame();
 		this.LoadAnimation();
 		this.LoadPhysMap();
+		this.LoadBackgroundMap();
+		this.LoadSound();
 	}
 
 	public int[][] getPhysicalMap() {
@@ -83,7 +98,7 @@ public class CacheDataLoader {
 		for (int i = 0; i < n; i++) {
 			FrameImage frame = new FrameImage();
 			while ((line = br.readLine()).equals("")) {
-				// Do tăng độ khó ho việc đọc file hoặc vô tình mà tạo ra các khoảng trống dư
+				// Do tăng độ khó cho việc đọc file hoặc vô tình mà tạo ra các khoảng trống dư
 				// thừa.Cho lặp miết để đọc bớt đi các dòng trống dư thừa
 			}
 
@@ -135,12 +150,23 @@ public class CacheDataLoader {
 		return res;
 	}
 
+	public int[][] getBackGroundMap() {
+		return this.back_ground;
+	}
+
 	public FrameImage getFrameImage(String name) {
-		// new ra vùng nhớ mới tránh bị tham chiếu đến cùng 1 vùng nhớ
-		// Ở đây do ta đã xây dựng copy constructor rồi nên nó sẽ đi gán giá trị thôi
-		// chứ không gán địa chỉ
+		/*
+		 * new ra vùng nhớ mới tránh bị tham chiếu đến cùng 1 vùng nhớ Ở đây do ta đã
+		 * xây dựng copy constructor rồi nên nó sẽ đi gán giá trị thôi chứ không gán địa
+		 * chỉ
+		 */
 		FrameImage res = new FrameImage(this.frameImages.get(name));
 		return res;
+	}
+
+	public AudioClip getSound(String name) {
+		AudioClip result = this.sounds.get(name);
+		return result;
 	}
 
 	public void LoadAnimation() throws IOException {
@@ -154,8 +180,10 @@ public class CacheDataLoader {
 			return;
 		}
 
-		// Nếu file không rỗng mà dòng đầu tiên của file có dữ liệu thì
-		// ta vô tình bỏ qua dòng đó do đó new lại
+		/*
+		 * Nếu file không rỗng mà dòng đầu tiên của file có dữ liệu thì ta vô tình bỏ
+		 * qua dòng đó do đó new lại
+		 */
 		fr = new FileReader(animationFile);
 		br = new BufferedReader(fr);
 
@@ -203,6 +231,49 @@ public class CacheDataLoader {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+
+	public void LoadBackgroundMap() {
+		File f = new File(backGroundMap);
+		try (FileInputStream fis = new FileInputStream(f);
+				InputStreamReader isr = new InputStreamReader(fis);
+				BufferedReader br = new BufferedReader(isr);) {
+			String line = br.readLine();
+			int rows = Integer.valueOf(line);
+			line = br.readLine();
+			int columns = Integer.valueOf(line);
+			this.back_ground = new int[rows][columns];
+			for (int i = 0; i < rows; i++) {
+				line = br.readLine();
+				String ds[] = line.split(" ");
+				for (int j = 0; j < ds.length; j++)
+					this.back_ground[i][j] = Integer.valueOf(ds[j]);
+			}
+		} catch (IOException e) {
+
+		}
+	}
+
+	public void LoadSound() {
+		File f = new File(soundPath);
+		/*
+		 * Đây là một cách đọc file nữa, ngắn gọn hơn so với cách dùng FileInputStream
+		 * rồi InputStreamReader rồi BufferedReader
+		 */
+		try (FileReader fr = new FileReader(f); BufferedReader br = new BufferedReader(fr);) {
+			String line = br.readLine();
+			int nums = Integer.valueOf(line);
+			for (int i = 0; i < nums; i++) {
+				while ((line = br.readLine()).equals(""))
+					;
+				String ds[] = line.split(" ");
+				AudioClip audio = Applet.newAudioClip(new URL("file", "", ds[1]));
+				this.sounds.put(ds[0], audio);
+			}
+
+		} catch (IOException e) {
+
 		}
 	}
 }

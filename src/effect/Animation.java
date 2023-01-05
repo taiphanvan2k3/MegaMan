@@ -1,13 +1,11 @@
 package effect;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
 
 public class Animation {
 	// Tên để quản lý animation
@@ -193,7 +191,7 @@ public class Animation {
 			if (l - beginTime > this.delayFrame.get(currentFrame)) {
 				// Qua ảnh mới
 				this.nextFrame();
-				// Set tại beginTime
+				// Set lại beginTime
 				beginTime = l;
 			}
 		}
@@ -225,30 +223,31 @@ public class Animation {
 
 	//Đa năng hoá phương thức draw
 	public void draw(Graphics2D g2, int x, int y) {
-		// Vẽ hình hiện tại
-		// Muốn nhân vật hiển thị ra tại toạ độ x,y thì phải vẽ làm sao cho x,y là chính
-		// giữa của HCN
-
 		/*
-		 * C1: BufferedImage img = this.getCurrentImage(); g2.drawImage(img,
-		 * x-img.getWidth() / 2, y - img.getHeight() / 2, null);
+		 * Vẽ hình hiện tại.Muốn nhân vật hiển thị ra tại toạ độ x,y thì phải vẽ làm sao
+		 * cho x,y là chính giữa của HCN
 		 */
 
-		// Thay vì dùng c1 lặp lại code thì gọi FrameImage hiện tại rồi rồi paint thôi
-		//vì class FrameImage ta đã xây dựng lại phương thức draw rồi
+		
+		/*
+		 * C1: BufferedImage img = this.getCurrentImage(); 
+		 * g2.drawImage(img,x-img.getWidth() / 2, y - img.getHeight() / 2, null); 
+		 * Thay vì dùng c1 lặp lại code thì gọi FrameImage hiện tại rồi rồi paint thôi 
+		 * vì class FrameImage ta đã xây dựng lại phương thức draw rồi
+		 */
+		 
 		FrameImage img = this.getFrameImages().get(currentFrame);
 		img.draw(g2, x, y);
 
 		// Vẽ viền bao quanh tấm hình và chú ý là drawRect chứ không fillRect
-		g2.setColor(Color.red);
-		if (drawRectFrame)
-			/*
-			 * img là BufferedImage img
-			 * C1: 
-			 * g2.drawRect(x-img.getWidth()/2,
-			 * y-img.getHeight()/2, img.getWidth(), img.getHeight());
-			 */
-			g2.drawRect(x - img.getImageWidth() / 2, y - img.getImageHeight() / 2, img.getImageWidth(),
-					img.getImageHeight());
+//		if (drawRectFrame)
+//			/*
+//			 * img là BufferedImage img
+//			 * C1: 
+//			 * g2.drawRect(x-img.getWidth()/2,
+//			 * y-img.getHeight()/2, img.getWidth(), img.getHeight());
+//			 */
+//			g2.drawRect(x - img.getImageWidth() / 2, y - img.getImageHeight() / 2, img.getImageWidth(),
+//					img.getImageHeight());
 	}
 }

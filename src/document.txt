@@ -120,7 +120,7 @@ Lớp này sẽ có phương thức ảo là Update() vì các nhân vật game
 đều cần phương thức update để cập nhật posX,posY
 - Trong game có 2 loại đối tượng: 1 cái liên quan đến đối tượng to lớn như map
 (physicalMap và backgroundMap). Còn loại kia liên quan đến các đối tượng
-cụ thể (nhân vật)
+cụ thể tương tác được chẳng hạn như nhân vật,quái,đạn...
 
 16/ Xây dựng lớp ParticularObject
 - Ta không để thuộc tính weight,height,mass,speedX,speedY,blood 
@@ -128,3 +128,85 @@ vào GameObject vì điều này không đúng vì map thì làm gì có các
 thuộc tính trên.
 => Do đó ta sẽ thêm các thuộc tính chỉ vào các class nhân vật thôi
 cụ thể là lớp cơ sở ParticularObject kế thừa từ lớp GameObject
+
+17/ Xây dựng thêm phương thức va chạm với trần, tường bên trái,phải
+tại lớp Physical map
+
+18/Xây dựng lớp Human
+- Đây là lớp đại diện cho lớp có tay chân như megaman,boss
+- Như nói ở trước thì particularObject có thể gồm nhân vật,đạn
+do đó chưa cụ thể lắm, vì vậy xây dựng thêm lớp con là Human
+để kể thừa lớp particularObject.Lớp human sẽ lớp là cho các nhân
+vật có tay chân, có các thuộc tính như jump,land
+
+19/Sửa lại code cho class megaMan và inputManager
+Tiến hành cho megaMan kế thừa từ class Human
+
+20/Xây dựng lớp Camera
+- Làm lớp này để khung hình đi theo nhân vật
+- Map cứng, chỉ có camera mới thay đổi thôi,camera nó di chuyển trên map
+và đi theo nhân vật
+- Camera sẽ là 1 thuộc tính của lớp GameWorld giống như MegaMan và PhysicalMap
+- Khi camera di chuyển thì cảnh của map cũng thay đổi theo do đó cần chỉnh sửa
+lại phương thức draw của lớp physicalMap , drawCollisionWithMap và drawCollisionWithEnemy ở lớp
+particularObject
+
+21/Fix không cho megaman nhảy liên tục trên không
+bằng cách thay đổi nút nhảy lên của inputManager, thay đổi thành jump
+
+-Viết phương thức draw cho megaMan để tạo animation
+
+21/Để viết được phương thức thì phải viết được Bullet
+Như đã nói tại mục 18 thì particularObject mô tả cho nhân vật và đạn
+do đó ta sẽ cho Bullet kế thừa từ particularObject
+-Viết lớp BlueFire
+
+22/Xây dựng lớp ParticularObjectManager
+Lớp này có tác dụng quản lí tất cả các object trong game trong 1 List
+-Xây dựng lớp này rất tiện cho việc thay vì ghi megaman.update(),megaman.draw(),....
+thì ta xây dựng luôn 1 hàm update và draw để vẽ các đối tượng còn được thấy trong camera
+
+23/Xây dựng lớp BulletManager kế thừa từ lớp ParticularObjectManager
+và thêm đối tượng lớp BulletManager vào gameWorld
+**Nhắc lại: các đối tượng trong game đều giữ 1 thuộc tính là GameWorld để
+nó biết được vị trí của camera ở đâu để mà cập nhật và một số chức năng khác
+-Làm phương thức attack() cho megaMan
+
+24/Làm lớp xây dựng cảnh vật trong game BackgroundMap
+- Trước tiên phải viết phương thức loadBackgroundMap từ file vào trước tại
+lớp CacheDataLoader
+- PhysicalMap bây giờ không cần vẽ nữa nhưng nó rất quan trọng trong việc
+xử lí va chạm với nhân vật.Còn BackgroundMap chỉ đơn thuần là đồ hoạ lên thôi
+chứ không xử lí va chạm gì cả.
+
+-Chú ý phải vào GamePanel tại phương thức renderGame phải xoá đi fillRect
+vì lúc này ta đã có hàm draw của backGroundMap để vẽ toàn bộ màn hình rồi.
+
+25/Viết class đạn và quái RedEye
+-Sửa lại GameWorld, thêm thuộc tính là đối tượng lớp ParticularObjectManager
+vào, xong add megaMan vào đó. Do đó ta không cần megaMan.draw() nữa, thay vào
+đó ta dùng lớp particularObjectManager.draw(), cũng như là Update()
+- Và lưu ý tại lớp particularObjectManager khi Update sẽ gọi đến phương thức 
+Update() của mỗi đối tượng có trong list, nếu đối tượng nào mà để update() thay vì
+Update() thì sẽ bị lỗi do lúc này không phải override, và chương trình sẽ đi gọi
+Update() ở lớp cha => Dẫn đến kết quả không mong muốn.
+
+-Viết phương thức initEnemies() tại lớp GameWorld để sinh ra các con quái
+
+26/Xử lí va chạm với đạn tại phương thức Update của lớp Bullet
+và va chạm với quái tại phương thức Update của ParticularObject
+
+27/Làm âm thanh cho game
+-Sử dụng lớp AudioClip
+-Viết phần load file âm thanh lên trong CacheDataLoader.
+-Sử dụng âm thanh
+- Làm âm thanh background cho GameWold
+
+28/Xây dựng lớp FinalBoss
+-Mấy con quái khác thì chỉ cần extends ParticularObject thôi,còn 
+FinalBoss có nhiều động tác bay nhảy giống megaMan hơn nên sẽ extends Humans
+-Xây dựng đạn của boss với class RocketBullet
+
+-Xoá phương thức update,render tại lớp GamePanel
+vì giờ đây đã có Update(),Render() trong GameWorld
+phụ trách rồi

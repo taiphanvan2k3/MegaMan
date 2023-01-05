@@ -23,7 +23,6 @@ yellow_flower_bullet
 bullet3_1 30000000 bullet3_2 30000000 bullet3_3 30000000 bullet3_4 30000000 bullet3_3 30000000 bullet3_2 30000000
 darkraisebullet
 bullet4_1 30000000 bullet4_2 30000000 bullet4_3 30000000 bullet4_2 30000000 bullet4_2 30000000
-
 gun_emplacement
 gun_emplacement1 100000000
 hurting
@@ -53,4 +52,4 @@ boss_idle1 500000000 boss_idle2 130000000 boss_idle3 130000000 boss_idle4 130000
 boss_shooting
 boss_shooting1 500000000 boss_shooting2 500000000
 boss_slide
-boss_slide1 500000000 boss_slide2 500000000 boss_slide3 500000000 boss_slide4 500000000
+boss_slide1 500000000 boss_slide2 500000000 boss_slide3 500000000 boss_slide4 500000000 
