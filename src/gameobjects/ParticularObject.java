@@ -100,7 +100,10 @@ public abstract class ParticularObject extends GameObject {
 	}
 
 	public void setBlood(float blood) {
-		this.blood = blood;
+		if (blood > 0)
+			this.blood = blood;
+		else
+			this.blood = 0;
 	}
 
 	public int getDamage() {
@@ -160,12 +163,12 @@ public abstract class ParticularObject extends GameObject {
 	}
 
 	public void beHurt(int damage) {
-		System.out.println(this.blood + "-" + damage);
-		this.blood -= damage;
+		this.setBlood(this.blood - damage);
 		this.state = BEHURT;
 		/*
-		 * Khi gọi hurtingCallBack() thì tuỳ vào việc ParticularObject new MegaMan hay quái
-		 * thì sẽ có cách gọi khác nhau, lí do là vì hurtingCallBack() được Override lại ở lớp con.
+		 * Khi gọi hurtingCallBack() thì tuỳ vào việc ParticularObject new MegaMan hay
+		 * quái thì sẽ có cách gọi khác nhau, lí do là vì hurtingCallBack() được
+		 * Override lại ở lớp con.
 		 */
 		hurtingCallBack();
 	}
@@ -223,7 +226,6 @@ public abstract class ParticularObject extends GameObject {
 
 	public void hurtingCallBack() {
 		// Lát có lớp override lại phương thức này
-		System.out.println("hurting callBack of base class");
 	}
 
 	@Override

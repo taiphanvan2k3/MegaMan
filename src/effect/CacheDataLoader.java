@@ -269,6 +269,7 @@ public class CacheDataLoader {
 					;
 				String ds[] = line.split(" ");
 				AudioClip audio = Applet.newAudioClip(new URL("file", "", ds[1]));
+				System.out.println(ds[1]);
 				this.sounds.put(ds[0], audio);
 			}
 

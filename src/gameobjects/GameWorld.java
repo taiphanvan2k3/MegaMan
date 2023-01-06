@@ -84,6 +84,39 @@ public class GameWorld {
 
 		// Khởi tạo âm thanh
 		this.backGroundMusic = CacheDataLoader.getInstance().getSound("bgmusic");
+		this.closeDoorToBoss();
+	}
+
+	private void closeDoorToBoss() {
+		physMap.physicalMap[14][119] = 1;
+		physMap.physicalMap[15][119] = 1;
+		physMap.physicalMap[16][119] = 1;
+		physMap.physicalMap[17][119] = 1;
+
+		backgroundMap.map[14][119] = 15;
+		backgroundMap.map[15][119] = 15;
+		backgroundMap.map[16][119] = 15;
+		backgroundMap.map[17][119] = 15;
+		backgroundMap.map[14][120] = 17;
+		backgroundMap.map[15][120] = 17;
+		backgroundMap.map[16][120] = 17;
+		backgroundMap.map[17][120] = 17;
+	}
+
+	private void openDoorToBoss() {
+		physMap.physicalMap[14][119] = 0;
+		physMap.physicalMap[15][119] = 0;
+		physMap.physicalMap[16][119] = 0;
+		physMap.physicalMap[17][119] = 0;
+
+		backgroundMap.map[14][119] = 47;
+		backgroundMap.map[15][119] = 47;
+		backgroundMap.map[16][119] = 47;
+		backgroundMap.map[17][119] = 47;
+		backgroundMap.map[14][120] = 47;
+		backgroundMap.map[15][120] = 47;
+		backgroundMap.map[16][120] = 47;
+		backgroundMap.map[17][120] = 47;
 	}
 
 	public megaMan getMegaman() {
@@ -185,8 +218,6 @@ public class GameWorld {
 		this.state = state;
 	}
 
-	
-
 	private void updateTutorial() {
 		switch (tutorialState) {
 		case INTROGAME:
@@ -206,7 +237,7 @@ public class GameWorld {
 			break;
 		case MEETFINALBOSS:
 			if (indexOfStoryTutorial == 0) {
-				// Sẽ khép dần lại intro
+				// Nửa trên và dưới của màn hình bắt đầu xuất hiện viền đen.
 				if (openIntroGameY >= 450)
 					openIntroGameY--;
 				if (camera.getPosX() < finalBossX) {
@@ -232,15 +263,16 @@ public class GameWorld {
 				megaman.stopRun();
 
 				// Thực hiện đóng cổng lại
-				physMap.physicalMap[14][120] = 1;
-				physMap.physicalMap[15][120] = 1;
-				physMap.physicalMap[16][120] = 1;
-				physMap.physicalMap[17][120] = 1;
-
-				backgroundMap.map[14][120] = 17;
-				backgroundMap.map[15][120] = 17;
-				backgroundMap.map[16][120] = 17;
-				backgroundMap.map[17][120] = 17;
+//				physMap.physicalMap[14][120] = 1;
+//				physMap.physicalMap[15][120] = 1;
+//				physMap.physicalMap[16][120] = 1;
+//				physMap.physicalMap[17][120] = 1;
+//
+//				backgroundMap.map[14][120] = 17;
+//				backgroundMap.map[15][120] = 17;
+//				backgroundMap.map[16][120] = 17;
+//				backgroundMap.map[17][120] = 17;
+				this.closeDoorToBoss();
 			} else {
 				// Giai đoạn đang chạy tutorial
 				if (this.currentLengthOfTutorial < textTutorial.length())
@@ -266,6 +298,7 @@ public class GameWorld {
 		}
 
 	}
+
 	private void renderTutorial(Graphics2D g2) {
 		/*
 		 * Khi mới mở game hay mới vừa gặp boss thì việc thu hẹp màn hình đen là như
@@ -297,6 +330,7 @@ public class GameWorld {
 		}
 		// meetfinalBoss thì đã có phần xử lí trước khi gọi if rồi.
 	}
+
 	public void Update() {
 		switch (state) {
 		case INIT_GAME:
@@ -309,8 +343,11 @@ public class GameWorld {
 			bulletManager.updateObjects();
 			physMap.Update();
 			camera.Update();
+			if (this.getParticularObjectManager().onlyExistBoss())
+				this.openDoorToBoss();
 
 			if (megaman.getPosX() > finalBossX && !finalBossTrigger) {
+				System.out.println(physMap.physicalMap[14][120] + "\t" + backgroundMap.map[14][120]);
 				// Nghĩa là chạm mặt boss rồi
 				this.finalBossTrigger = true;
 

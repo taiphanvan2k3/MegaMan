@@ -21,8 +21,8 @@ public class GameFrame extends JFrame {
 		long begin = System.currentTimeMillis();
 		this.setSize(screen_width, screen_height);
 		this.setTitle("Mega Man");
-		Image img = new ImageIcon(this.getClass().getResource("/megaman2.png")).getImage();
-		this.setIconImage(img);
+		//Image img = new ImageIcon(this.getClass().getResource("/megaman2.png")).getImage();
+		//this.setIconImage(img);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLayout(new BorderLayout());

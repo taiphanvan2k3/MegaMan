@@ -1,6 +1,7 @@
 package gameobjects;
 
 import java.applet.AudioClip;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
@@ -93,6 +94,23 @@ public class RedEyeDevil extends ParticularObject {
 			if (this.getState() == NOBEHURT && (System.nanoTime() / 10000000) % 2 != 0) {
 				// Khi nó miễn đang ở trạng thái noBeHurt thì nó được miễn sát thương
 			} else {
+				g2.setColor(Color.gray);
+				/*
+				 * Toạ độ tại tâm HCN là (this.getPosX() -
+				 * getGameWorld().getCamera().getPosX(),this.getPosY() -
+				 * getGameWorld().getCamera().getPosY()) do đó để vẽ thanh HP trên đầu quái thì
+				 * ta phải giảm hoành độ trên đi width/2 và giảm tung độ đi height/2. Để tạo ra
+				 * khoảng hở giữa thanh HP và nhân vật do đó ta tiếp tục trừ tung độ cho 20 để
+				 * tạo ra khoảng hở.
+				 */
+				g2.fillRect((int) (this.getPosX() - getGameWorld().getCamera().getPosX() - this.getWidth() / 2),
+						(int) ((this.getPosY() - getGameWorld().getCamera().getPosY()) - this.getHeight() / 2 - 20),
+						102, 12);
+				g2.setColor(Color.red);
+				g2.fillRect((int) (this.getPosX() - getGameWorld().getCamera().getPosX() - this.getWidth() / 2),
+						(int) ((this.getPosY() - getGameWorld().getCamera().getPosY()) - this.getHeight() / 2 - 20),
+						(int) this.getBlood(), 10);
+
 				if (this.getDirection() == LEFT_DIR) {
 					backAnimation.Update(System.nanoTime());
 					backAnimation.draw(g2, (int) (this.getPosX() - getGameWorld().getCamera().getPosX()),

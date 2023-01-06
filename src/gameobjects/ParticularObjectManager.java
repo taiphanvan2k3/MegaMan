@@ -7,7 +7,7 @@ import java.util.List;
 
 public class ParticularObjectManager {
 	private GameWorld gameWorld;
-	//Để protected để lớp con có thể dùng mà không cần thông qua getter
+	// Để protected để lớp con có thể dùng mà không cần thông qua getter
 	protected List<ParticularObject> particularObjects;
 
 	public ParticularObjectManager(GameWorld gameWorld) {
@@ -38,6 +38,10 @@ public class ParticularObjectManager {
 		}
 	}
 
+	public boolean onlyExistBoss() {
+		return this.particularObjects.size() == 1;
+	}
+
 	public ParticularObject getCollisionWithEnemyObject(ParticularObject object) {
 		/*
 		 * Cũng phải đồng bộ vì lỡ như lúc ta vừa kiểm tra xem có ParticularObject nào
@@ -56,9 +60,9 @@ public class ParticularObjectManager {
 
 	public void updateObjects() {
 		synchronized (particularObjects) {
-			//Không nền dùng for each
-			for(int i=0;i<this.particularObjects.size();i++) {
-				ParticularObject obj=this.particularObjects.get(i);
+			// Không nền dùng for each
+			for (int i = 0; i < this.particularObjects.size(); i++) {
+				ParticularObject obj = this.particularObjects.get(i);
 				// Chỉ update những object nào có xuất hiện trong view thôi
 				if (!obj.isObjectOutOfCameraView())
 					obj.Update();
@@ -67,10 +71,12 @@ public class ParticularObjectManager {
 				 * nghĩ là object ra khỏi view là remove nó là sai vì điều này chỉ đúng với viên
 				 * đạn thôi,chứ còn như quái thì điều này là sai
 				 */
-				if (obj.getState() == ParticularObject.DEATH)
+				if (obj.getState() == ParticularObject.DEATH) {
 					this.particularObjects.remove(obj);
+					System.out.println("number of enemys" + this.particularObjects.size());
+				}
+
 			}
-//			}
 		}
 	}
 
