@@ -110,7 +110,13 @@ public class RedEyeDevil extends ParticularObject {
 				g2.fillRect((int) (this.getPosX() - getGameWorld().getCamera().getPosX() - this.getWidth() / 2),
 						(int) ((this.getPosY() - getGameWorld().getCamera().getPosY()) - this.getHeight() / 2 - 20),
 						(int) this.getBlood(), 10);
-				
+
+				/*
+				 * g2.setColor(Color.red); g2.fillRect((int) (this.getPosX() -
+				 * getGameWorld().getCamera().getPosX() - this.getWidth() / 2), (int)
+				 * ((this.getPosY() - getGameWorld().getCamera().getPosY()) - this.getHeight() /
+				 * 2 - 20), (int) this.getBlood(), 10);
+				 */
 				if (this.getDirection() == LEFT_DIR) {
 					backAnimation.Update(System.nanoTime());
 					backAnimation.draw(g2, (int) (this.getPosX() - getGameWorld().getCamera().getPosX()),
@@ -120,8 +126,8 @@ public class RedEyeDevil extends ParticularObject {
 					forwardAnimation.draw(g2, (int) (this.getPosX() - getGameWorld().getCamera().getPosX()),
 							(int) (this.getPosY() - getGameWorld().getCamera().getPosY()));
 				}
-				
-				//test github
+
+				// test github
 			}
 		}
 	}
