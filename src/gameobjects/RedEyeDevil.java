@@ -120,8 +120,6 @@ public class RedEyeDevil extends ParticularObject {
 					forwardAnimation.draw(g2, (int) (this.getPosX() - getGameWorld().getCamera().getPosX()),
 							(int) (this.getPosY() - getGameWorld().getCamera().getPosY()));
 				}
-				
-				//Hello Github
 			}
 		}
 	}
