@@ -121,7 +121,7 @@ public class RedEyeDevil extends ParticularObject {
 							(int) (this.getPosY() - getGameWorld().getCamera().getPosY()));
 				}
 				
-				//alo
+				//alo hâiai
 			}
 		}
 	}
