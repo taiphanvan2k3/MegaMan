@@ -2,6 +2,8 @@ package userInterface;
 
 import java.awt.event.KeyEvent;
 
+import javax.sound.sampled.Clip;
+
 import gameobjects.GameWorld;
 import gameobjects.PhysicalMap;
 import gameobjects.megaMan;
@@ -37,7 +39,7 @@ public class InputManager {
 				else {
 					gameWorld.switchState(GameWorld.TUTORIAL);
 				}
-				gameWorld.getBackgroundMusic().loop();
+				gameWorld.getBackgroundMusic().loop(Clip.LOOP_CONTINUOUSLY);
 			}
 			if (gameWorld.state == GameWorld.TUTORIAL && gameWorld.getIndexOfStoryTutorial() >= 1) {
 				if (gameWorld.getIndexOfStoryTutorial() <= 3) {

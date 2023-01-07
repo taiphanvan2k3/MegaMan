@@ -73,7 +73,7 @@ public class ParticularObjectManager {
 				 */
 				if (obj.getState() == ParticularObject.DEATH) {
 					this.particularObjects.remove(obj);
-					System.out.println("number of enemys" + this.particularObjects.size());
+					System.out.println("number of enemys remains: " + this.particularObjects.size());
 				}
 
 			}

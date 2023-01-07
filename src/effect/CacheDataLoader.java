@@ -1,20 +1,21 @@
 package effect;
 
-import java.applet.Applet;
-import java.applet.AudioClip;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 //Lớp này dùng để load dữ liệu từ file lên
 public class CacheDataLoader {
@@ -30,12 +31,12 @@ public class CacheDataLoader {
 	 */
 	private Hashtable<String, FrameImage> frameImages;
 	private Hashtable<String, Animation> animations;
-	private Hashtable<String, AudioClip> sounds;
-	private String frameFile = "data/frame.txt";
-	private String animationFile = "data/animation.txt";
-	private String physMapFile = "data/phys_map.txt";
-	private String backGroundMap = "data/background_map.txt";
-	private String soundPath = "data/sounds.txt";
+	private Hashtable<String, Clip> sounds;
+	private String frameFile = "frame.txt";
+	private String animationFile = "animation.txt";
+	private String physMapFile = "phys_map.txt";
+	private String backGroundMap = "background_map.txt";
+	private String soundPath = "sounds.txt";
 	// Mảng 2 chiều để chứa 0,1 thể hiện việc có in ra map hay không.
 	int phys_map[][];
 	int back_ground[][];
@@ -47,7 +48,7 @@ public class CacheDataLoader {
 	private CacheDataLoader() {
 		this.frameImages = new Hashtable<String, FrameImage>();
 		this.animations = new Hashtable<String, Animation>();
-		this.sounds = new Hashtable<String, AudioClip>();
+		this.sounds = new Hashtable<String, Clip>();
 	}
 
 	public static CacheDataLoader getInstance() {
@@ -63,7 +64,7 @@ public class CacheDataLoader {
 		this.LoadAnimation();
 		this.LoadPhysMap();
 		this.LoadBackgroundMap();
-		this.LoadSound();
+		this.LoadSounds();
 	}
 
 	public int[][] getPhysicalMap() {
@@ -136,10 +137,13 @@ public class CacheDataLoader {
 
 			// img chứa bức ảnh lớn còn subImage chứa bức ảnh con lấy tại toạ độ x,y với
 			// kích thước width,height
-			BufferedImage img = ImageIO.read(new File(path));
+			// BufferedImage img = ImageIO.read(new
+			// File(this.getClass().getClassLoader().getResource("" + path).getPath()));
+
+			// Lấy URL ra thì mới export được, chứ không chuyển thành String qua getPath()
+			BufferedImage img = ImageIO.read(getClass().getClassLoader().getResource(path));
 			BufferedImage subImage = img.getSubimage(x, y, witdth, height);
 			frame.setImage(subImage);
-
 			frameImages.put(frame.getName(), frame);
 		}
 
@@ -164,8 +168,8 @@ public class CacheDataLoader {
 		return res;
 	}
 
-	public AudioClip getSound(String name) {
-		AudioClip result = this.sounds.get(name);
+	public Clip getSound(String name) {
+		Clip result = this.sounds.get(name);
 		return result;
 	}
 
@@ -208,32 +212,31 @@ public class CacheDataLoader {
 		fr.close();
 	}
 
-	public void LoadPhysMap() {
-		File f = new File(physMapFile);
-		try (FileInputStream fis = new FileInputStream(f);
-				InputStreamReader isr = new InputStreamReader(fis);
-				BufferedReader br = new BufferedReader(isr);) {
-			/*
-			 * Hoặc chỉ đơn giản: FileReader fr=new FileReader(f); BufferedReader br=new
-			 * BufferedReader(fr);
-			 */
-			String line = br.readLine();
-			int rows = Integer.valueOf(line);
-			line = br.readLine();
-			int columns = Integer.valueOf(line);
+	public void LoadPhysMap() throws IOException {
+		FileReader fr = new FileReader(physMapFile);
+		BufferedReader br = new BufferedReader(fr);
 
-			phys_map = new int[rows][columns];
-			for (int i = 0; i < rows; i++) {
-				line = br.readLine();
-				String ds[] = line.split(" ");
-				for (int j = 0; j < columns; j++)
-					phys_map[i][j] = Integer.valueOf(ds[j]);
+		String line = null;
+
+		line = br.readLine();
+		int numberOfRows = Integer.parseInt(line);
+		line = br.readLine();
+		int numberOfColumns = Integer.parseInt(line);
+		// vô mess tải cái của t về
+		instance.phys_map = new int[numberOfRows][numberOfColumns];
+
+		for (int i = 0; i < numberOfRows; i++) {
+			line = br.readLine();
+			String[] str = line.split(" ");
+			for (int j = 0; j < numberOfColumns; j++) {
+				instance.phys_map[i][j] = Integer.parseInt(str[j]);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
+
+		br.close();
 	}
 
+	// t tick theo video
 	public void LoadBackgroundMap() {
 		File f = new File(backGroundMap);
 		try (FileInputStream fis = new FileInputStream(f);
@@ -255,26 +258,57 @@ public class CacheDataLoader {
 		}
 	}
 
-	public void LoadSound() {
-		File f = new File(soundPath);
-		/*
-		 * Đây là một cách đọc file nữa, ngắn gọn hơn so với cách dùng FileInputStream
-		 * rồi InputStreamReader rồi BufferedReader
-		 */
-		try (FileReader fr = new FileReader(f); BufferedReader br = new BufferedReader(fr);) {
-			String line = br.readLine();
-			int nums = Integer.valueOf(line);
-			for (int i = 0; i < nums; i++) {
+	public void LoadSounds() throws IOException {
+
+		sounds = new Hashtable<String, Clip>();
+
+		FileReader fr = new FileReader(soundPath);
+		BufferedReader br = new BufferedReader(fr);
+
+		String line = null;
+
+		if (br.readLine() == null) {
+			System.out.println("No data");
+			throw new IOException();
+		} else {
+
+			// Có thể bỏ đi
+			fr = new FileReader(soundPath);
+			br = new BufferedReader(fr);
+
+			while ((line = br.readLine()).equals(""))
+				;
+
+			int n = Integer.parseInt(line);
+
+			for (int i = 0; i < n; i++) {
+
+				Clip audioClip = null;
 				while ((line = br.readLine()).equals(""))
 					;
-				String ds[] = line.split(" ");
-				AudioClip audio = Applet.newAudioClip(new URL("file", "", ds[1]));
-				System.out.println(ds[1]);
-				this.sounds.put(ds[0], audio);
+
+				String[] str = line.split(" ");
+
+				String name = str[0];
+				URL url = getClass().getClassLoader().getResource(str[1]);
+				AudioInputStream sound;
+				try {
+					/*
+					 * Không truyền đối tượng File vào getAudioInputStream vì nếu truyền vào File là
+					 * ta đã thông qua String để tạo File. File f= new
+					 * File(getClass().getClassLoader().getResource(str[1]).getPath()); (truyền vào
+					 * String vào cho new File(String). Làm điều này chỉ chạy được trên IDE chứ
+					 * không chạy được khi export ra jar
+					 */
+					sound = AudioSystem.getAudioInputStream(url);
+					audioClip = AudioSystem.getClip();
+					audioClip.open(sound);
+				} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+					e.printStackTrace();
+				}
+				instance.sounds.put(name, audioClip);
 			}
-
-		} catch (IOException e) {
-
 		}
+		br.close();
 	}
 }

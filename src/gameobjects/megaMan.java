@@ -4,6 +4,8 @@ import java.applet.AudioClip;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
+import javax.sound.sampled.Clip;
+
 import effect.Animation;
 import effect.CacheDataLoader;
 import userInterface.GameFrame;
@@ -20,8 +22,8 @@ public class megaMan extends Human {
 	private Animation climWallForwardAnimation, climWallBackAnimation;
 	private long lastShootingTime;
 	private boolean isShooting = false;
-	private AudioClip hurtingSound;
-	private AudioClip shooting;
+	private Clip hurtingSound;
+	private Clip shooting;
 
 	public megaMan(float posX, float posY, GameWorld gameWorld) {
 		super(posX, posY, 70, 90, 0.1f, 100, gameWorld);
@@ -168,7 +170,7 @@ public class megaMan extends Human {
 		// Nếu như bắn xồng phát đạn rồi và đang không ngồi thì mới được bắn
 		if (!this.isShooting && !super.isSquating()) {
 			// Bật nhạc của việc nghe âm thanh
-			shooting.play();
+			shooting.start();
 
 			/*
 			 * Bắn tại vị trí nhân vật nên đạn cũng xuất phát tại tâm (x,y) của HCN bao xung
@@ -228,7 +230,7 @@ public class megaMan extends Human {
 	@Override
 	public void hurtingCallBack() {
 		System.out.println("Call back hurting");
-		hurtingSound.play();
+		hurtingSound.start();
 	}
 
 	public void draw(Graphics2D g2) {

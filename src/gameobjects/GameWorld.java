@@ -1,10 +1,10 @@
 package gameobjects;
 
-import java.applet.AudioClip;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+
+import javax.sound.sampled.Clip;
 
 import effect.CacheDataLoader;
 import effect.FrameImage;
@@ -49,7 +49,7 @@ public class GameWorld {
 	private boolean finalBossTrigger = false;
 	private ParticularObject boss;
 
-	private AudioClip backGroundMusic;
+	private Clip backGroundMusic;
 
 	private FrameImage avatar = CacheDataLoader.getInstance().getFrameImage("avatar");
 
@@ -92,7 +92,12 @@ public class GameWorld {
 		physMap.physicalMap[15][119] = 1;
 		physMap.physicalMap[16][119] = 1;
 		physMap.physicalMap[17][119] = 1;
+		physMap.physicalMap[14][120] = 1;
+		physMap.physicalMap[15][120] = 1;
+		physMap.physicalMap[16][120] = 1;
+		physMap.physicalMap[17][120] = 1;
 
+		
 		backgroundMap.map[14][119] = 15;
 		backgroundMap.map[15][119] = 15;
 		backgroundMap.map[16][119] = 15;
@@ -108,6 +113,10 @@ public class GameWorld {
 		physMap.physicalMap[15][119] = 0;
 		physMap.physicalMap[16][119] = 0;
 		physMap.physicalMap[17][119] = 0;
+		physMap.physicalMap[14][120] = 0;
+		physMap.physicalMap[15][120] = 0;
+		physMap.physicalMap[16][120] = 0;
+		physMap.physicalMap[17][120] = 0;
 
 		backgroundMap.map[14][119] = 47;
 		backgroundMap.map[15][119] = 47;
@@ -147,7 +156,7 @@ public class GameWorld {
 		return this.particularObjectManager;
 	}
 
-	public AudioClip getBackgroundMusic() {
+	public Clip getBackgroundMusic() {
 		return this.backGroundMusic;
 	}
 
@@ -263,15 +272,6 @@ public class GameWorld {
 				megaman.stopRun();
 
 				// Thực hiện đóng cổng lại
-//				physMap.physicalMap[14][120] = 1;
-//				physMap.physicalMap[15][120] = 1;
-//				physMap.physicalMap[16][120] = 1;
-//				physMap.physicalMap[17][120] = 1;
-//
-//				backgroundMap.map[14][120] = 17;
-//				backgroundMap.map[15][120] = 17;
-//				backgroundMap.map[16][120] = 17;
-//				backgroundMap.map[17][120] = 17;
 				this.closeDoorToBoss();
 			} else {
 				// Giai đoạn đang chạy tutorial

@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
+import javax.sound.sampled.Clip;
+
 import effect.Animation;
 import effect.CacheDataLoader;
 
@@ -20,7 +22,7 @@ public class RedEyeDevil extends ParticularObject {
 	 */
 	private long startTimeToShoot;
 
-	private AudioClip shooting;
+	private Clip shooting;
 
 	public RedEyeDevil(float posX, float posY, GameWorld gameWorld) {
 		/*
@@ -52,7 +54,7 @@ public class RedEyeDevil extends ParticularObject {
 		/*
 		 * Đây là nơi tạo ra loại đạn cho con quái tấn công.
 		 */
-		shooting.play();
+		shooting.start();
 		Bullet bullet = new RedEyeBullet(this.getPosX(), this.getPosY(), getGameWorld());
 		bullet.setTeamType(this.getTeamType());
 		if (this.getDirection() == LEFT_DIR) {
