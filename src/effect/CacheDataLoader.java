@@ -294,9 +294,9 @@ public class CacheDataLoader {
 					/*
 					 * Chú ý là dùng Clip chứ không dùng AudioClip nữa
 					 * Không truyền đối tượng File vào getAudioInputStream vì nếu truyền vào File là
-					 * ta đã thông qua String để tạo File. File f= new
-					 * File(getClass().getClassLoader().getResource(str[1]).getPath()); (truyền vào
-					 * String vào cho new File(String). Làm điều này chỉ chạy được trên IDE chứ
+					 * ta đã thông qua String để tạo File. 
+					 * File f= new File(getClass().getClassLoader().getResource(str[1]).getPath()); 
+					 * (truyền vào String vào cho new File(String). Làm điều này chỉ chạy được trên IDE chứ
 					 * không chạy được khi export ra jar
 					 */
 					sound = AudioSystem.getAudioInputStream(url);
