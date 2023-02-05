@@ -222,7 +222,6 @@ public class CacheDataLoader {
 		int numberOfRows = Integer.parseInt(line);
 		line = br.readLine();
 		int numberOfColumns = Integer.parseInt(line);
-		// vô mess tải cái của t về
 		instance.phys_map = new int[numberOfRows][numberOfColumns];
 
 		for (int i = 0; i < numberOfRows; i++) {
@@ -268,7 +267,6 @@ public class CacheDataLoader {
 		String line = null;
 
 		if (br.readLine() == null) {
-			System.out.println("No data");
 			throw new IOException();
 		} else {
 
