@@ -75,8 +75,12 @@ public class CacheDataLoader {
 		File f = new File(frameFile);
 		// C1:
 		/*
-		 * try { BufferedReader br=Files.newBufferedReader(f.toPath()); } catch
-		 * (IOException e) { e.printStackTrace(); }
+		 * try { 
+		 * 		BufferedReader br= Files.newBufferedReader(f.toPath()); 
+		 * } 
+		 * catch (IOException e) { 
+		 * 		e.printStackTrace(); 
+		 * }
 		 */
 		FileReader fr = new FileReader(frameFile);
 		BufferedReader br = new BufferedReader(fr);
